@@ -5,16 +5,17 @@ It will Store Documents.
 
 
 # Folder structure
-document-service/
+src/document-service/
 │
 ├── app/
-│   ├── routers/
+│   ├── main.py
+│   ├── api/
+│   │   └── document.py
 │   ├── models/
 │   ├── schemas/
 │   ├── services/
 │   ├── database/
-│   ├── config/
-│   └── main.py
+│   └── config/
 │
 ├── tests/
 ├── requirements.txt
