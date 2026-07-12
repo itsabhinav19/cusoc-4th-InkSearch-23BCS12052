@@ -4,19 +4,17 @@ venv/
 
 # Python cache
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
 
-# Environment variables
+# Environment
 .env
 
-# IDE
+# VS Code
 .vscode/
-.idea/
+
+# Pytest
+.pytest_cache/
 
 # OS
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
