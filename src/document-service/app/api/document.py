@@ -1,95 +1,35 @@
-from fastapi import APIRouter, HTTPException
-from app.schemas.document import DocumentCreate, Document
-from app.database.fake_db import documents
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from app.database.database import get_db
+from app.models.document import Document
+from app.schemas.document import DocumentCreate
+from app.schemas.document import DocumentResponse
 
 router = APIRouter(
     prefix="/documents",
     tags=["Documents"]
 )
 
-# -----------------------------
-# GET ALL DOCUMENTS
-# -----------------------------
-@router.get("/", response_model=list[Document])
-def get_documents():
-    return documents
+
+@router.get("/", response_model=list[DocumentResponse])
+def get_documents(db: Session = Depends(get_db)):
+
+    return db.query(Document).all()
 
 
-# -----------------------------
-# GET DOCUMENT BY ID
-# -----------------------------
-@router.get("/{document_id}", response_model=Document)
-def get_document(document_id: int):
+@router.post("/", response_model=DocumentResponse)
+def create_document(
+        document: DocumentCreate,
+        db: Session = Depends(get_db)
+):
 
-    for document in documents:
-        if document.id == document_id:
-            return document
+    db_document = Document(**document.model_dump())
 
-    raise HTTPException(
-        status_code=404,
-        detail="Document not found"
-    )
+    db.add(db_document)
 
+    db.commit()
 
-# -----------------------------
-# CREATE DOCUMENT
-# -----------------------------
-@router.post("/", response_model=Document, status_code=201)
-def create_document(document: DocumentCreate):
+    db.refresh(db_document)
 
-    new_document = Document(
-        id=len(documents) + 1,
-        **document.model_dump()
-    )
-
-    documents.append(new_document)
-
-    return new_document
-
-
-# -----------------------------
-# UPDATE DOCUMENT
-# -----------------------------
-@router.put("/{document_id}", response_model=Document)
-def update_document(document_id: int, updated_document: DocumentCreate):
-
-    for index, document in enumerate(documents):
-
-        if document.id == document_id:
-
-            new_document = Document(
-                id=document_id,
-                **updated_document.model_dump()
-            )
-
-            documents[index] = new_document
-
-            return new_document
-
-    raise HTTPException(
-        status_code=404,
-        detail="Document not found"
-    )
-
-
-# -----------------------------
-# DELETE DOCUMENT
-# -----------------------------
-@router.delete("/{document_id}")
-def delete_document(document_id: int):
-
-    for index, document in enumerate(documents):
-
-        if document.id == document_id:
-
-            deleted_document = documents.pop(index)
-
-            return {
-                "message": "Document deleted successfully",
-                "document": deleted_document
-            }
-
-    raise HTTPException(
-        status_code=404,
-        detail="Document not found"
-    )
+    return db_document

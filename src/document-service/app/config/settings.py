@@ -1,0 +1,1 @@
+DATABASE_URL = "postgresql://postgres:abhinav19@localhost:5432/InkSearch"
