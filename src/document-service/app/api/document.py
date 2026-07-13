@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database.database import get_db
-from app.models.document import Document
-from app.schemas.document import DocumentCreate
-from app.schemas.document import DocumentResponse
+from app.schemas.document import DocumentCreate, DocumentResponse
+from app.services.document_service import DocumentService
 
 router = APIRouter(
     prefix="/documents",
@@ -14,22 +13,36 @@ router = APIRouter(
 
 @router.get("/", response_model=list[DocumentResponse])
 def get_documents(db: Session = Depends(get_db)):
+    return DocumentService.get_documents(db)
 
-    return db.query(Document).all()
+
+@router.get("/{document_id}", response_model=DocumentResponse)
+def get_document(document_id: int, db: Session = Depends(get_db)):
+
+    document = DocumentService.get_document(db, document_id)
+
+    if not document:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    return document
 
 
-@router.post("/", response_model=DocumentResponse)
+@router.post("/", response_model=DocumentResponse, status_code=201)
 def create_document(
-        document: DocumentCreate,
-        db: Session = Depends(get_db)
+    document: DocumentCreate,
+    db: Session = Depends(get_db)
 ):
+    return DocumentService.create_document(db, document)
 
-    db_document = Document(**document.model_dump())
 
-    db.add(db_document)
+@router.delete("/{document_id}")
+def delete_document(document_id: int, db: Session = Depends(get_db)):
 
-    db.commit()
+    document = DocumentService.delete_document(db, document_id)
 
-    db.refresh(db_document)
+    if not document:
+        raise HTTPException(status_code=404, detail="Document not found")
 
-    return db_document
+    return {
+        "message": "Document deleted successfully"
+    }
