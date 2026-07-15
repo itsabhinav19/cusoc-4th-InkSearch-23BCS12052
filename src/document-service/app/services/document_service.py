@@ -21,3 +21,15 @@ class DocumentService:
     @staticmethod
     def delete_document(db: Session, document_id: int):
         return DocumentRepository.delete(db, document_id)
+    
+    @staticmethod
+    def update_document(
+        db: Session,
+        document_id:int,
+        updated_document: DocumentCreate
+    ):
+        return DocumentRepository.update(
+            db,
+            document_id,
+            updated_document
+        )

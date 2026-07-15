@@ -5,7 +5,11 @@ from app.models.document import Base
 
 app = FastAPI(
     title="InkSearch Document Service",
-    version="1.0.0"
+    description="handles document CRUD operations",
+    version="1.0.0",
+    contact={
+        "name": "Abhinav Kashyap"
+    }
 )
 
 app.include_router(router)
@@ -22,5 +26,7 @@ def root():
 @app.get("/health")
 def health():
     return {
-        "status": "Healthy"
+        "service": "Document Service",
+        "status": "healthy",
+        "version": "1.0.0"
     }

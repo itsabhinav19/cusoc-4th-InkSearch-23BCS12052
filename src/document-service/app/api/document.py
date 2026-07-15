@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database.database import get_db
-from app.schemas.document import DocumentCreate, DocumentResponse
+from app.schemas.document import DocumentCreate, DocumentResponse, DocumentUpdate
 from app.services.document_service import DocumentService
 
 router = APIRouter(
@@ -46,3 +46,27 @@ def delete_document(document_id: int, db: Session = Depends(get_db)):
     return {
         "message": "Document deleted successfully"
     }
+
+@router.put(
+    "/{document_id}",
+    response_model=DocumentResponse
+)
+def update_document(
+    document_id: int,
+    updated_document: DocumentUpdate,
+    db: Session = Depends(get_db)
+):
+
+    document = DocumentService.update_document(
+        db,
+        document_id,
+        updated_document
+    )
+
+    if not document:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found"
+        )
+
+    return document
