@@ -30,3 +30,17 @@ src/document-service/
 2. run code uvicorn app.main:app --reload
 and open the url http://127.0.0.1:8000
 and http://127.0.0.1:8000/docs (Swagger UI)
+
+## Database Migration
+
+Initialize Alembic
+
+alembic init alembic
+
+Create Migration
+
+alembic revision --autogenerate -m "message"
+
+Run Migration
+
+alembic upgrade head
