@@ -55,3 +55,11 @@ Sentence Transformers
 
 Purpose:
 Generate semantic embeddings for documents.
+
+## Semantic Search
+
+The search endpoint converts the user query into an embedding using Sentence Transformers.
+
+Each stored document embedding is compared using cosine similarity.
+
+The API returns the Top K most similar documents.

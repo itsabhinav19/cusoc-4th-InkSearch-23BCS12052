@@ -5,6 +5,10 @@ from app.database.database import get_db
 from app.schemas.document import DocumentCreate, DocumentResponse, DocumentUpdate
 from app.services.document_service import DocumentService
 
+from app.schemas.search import SearchRequest
+from app.services.search_service import SearchService
+from app.repositories.document_repository import DocumentRepository
+
 router = APIRouter(
     prefix="/documents",
     tags=["Documents"]
@@ -84,3 +88,18 @@ def update_document(
         )
 
     return document
+
+@router.post("/search")
+def search_documents(
+    request: SearchRequest,
+    db: Session = Depends(get_db)
+):
+
+    documents = DocumentRepository.get_all(db)
+
+    results = SearchService.semantic_search(
+        request.query,
+        documents
+    )
+
+    return results[:5]

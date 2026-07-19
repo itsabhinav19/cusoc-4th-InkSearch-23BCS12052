@@ -70,3 +70,8 @@ class DocumentRepository:
         db.commit()
         db.refresh(document)
         return document
+    
+    @staticmethod
+    def get_all(db: Session):
+
+        return db.query(Document).all()
