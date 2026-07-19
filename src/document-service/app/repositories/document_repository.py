@@ -3,6 +3,7 @@ from __future__ import annotations
 from sqlalchemy.orm import Session
 from app.models.document import Document
 from app.schemas.document import DocumentCreate
+from app.services.embedding_service import EmbeddingService
 
 
 class DocumentRepository:
@@ -14,12 +15,37 @@ class DocumentRepository:
     def get_by_id(db: Session, document_id: int):
         return db.query(Document).filter(Document.id == document_id).first()
 
+    embedding_service = EmbeddingService()
+
     @staticmethod
-    def create(db: Session, document: DocumentCreate):
-        db_document = Document(**document.model_dump())
+    def create(
+        db: Session,
+        document: DocumentCreate
+    ):
+
+        embedding = embedding_service.generate_embedding(
+            document.content
+        )
+
+        db_document = Document(
+
+            title=document.title,
+
+            author=document.author,
+
+            content=document.content,
+
+            tags=document.tags,
+
+            embedding=embedding
+        )
+
         db.add(db_document)
+
         db.commit()
+
         db.refresh(db_document)
+
         return db_document
 
     @staticmethod

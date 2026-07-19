@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
+from typing import Optional
 
 class DocumentCreate(BaseModel):
 
@@ -26,4 +27,8 @@ class DocumentResponse(DocumentCreate):
 
     id: int
 
-    model_config = ConfigDict(from_attributes=True)
+    embedding: Optional[str] = None
+
+    model_config = ConfigDict(
+        from_attributes=True
+    )

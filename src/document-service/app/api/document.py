@@ -27,12 +27,26 @@ def get_document(document_id: int, db: Session = Depends(get_db)):
     return document
 
 
-@router.post("/", response_model=DocumentResponse, status_code=201)
-def create_document(
-    document: DocumentCreate,
-    db: Session = Depends(get_db)
+@router.post("/{document_id}/embed")
+def generate_embedding(
+        document_id: int,
+        db: Session = Depends(get_db)
 ):
-    return DocumentService.create_document(db, document)
+
+    document = DocumentService.generate_embedding(
+        db,
+        document_id
+    )
+
+    if not document:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found"
+        )
+
+    return {
+        "message": "Embedding generated"
+    }
 
 
 @router.delete("/{document_id}")

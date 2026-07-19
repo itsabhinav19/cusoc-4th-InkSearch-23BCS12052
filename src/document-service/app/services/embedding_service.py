@@ -1,7 +1,6 @@
-from typing import List
+import json
 
 from sentence_transformers import SentenceTransformer
-
 
 class EmbeddingService:
 
@@ -11,6 +10,13 @@ class EmbeddingService:
             "all-MiniLM-L6-v2"
         )
 
-    def generate_embedding(self, text: str):
+    def generate_embedding(
+        self,
+        text: str
+    ):
 
-        return self.model.encode(text).tolist()
+        embedding = self.model.encode(text)
+
+        return json.dumps(
+            embedding.tolist()
+        )
