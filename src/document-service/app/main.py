@@ -2,14 +2,11 @@ from fastapi import FastAPI
 from app.api.document import router
 from app.database.database import engine
 from app.models.document import Base
+from app.core.config import settings
 
 app = FastAPI(
     title="InkSearch Document Service",
-    description="handles document CRUD operations",
-    version="1.0.0",
-    contact={
-        "name": "Abhinav Kashyap"
-    }
+    version=settings.API_VERSION
 )
 
 app.include_router(router)

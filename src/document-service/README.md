@@ -44,3 +44,14 @@ alembic revision --autogenerate -m "message"
 Run Migration
 
 alembic upgrade head
+
+## AI Model
+
+Model:
+all-MiniLM-L6-v2
+
+Framework:
+Sentence Transformers
+
+Purpose:
+Generate semantic embeddings for documents.
