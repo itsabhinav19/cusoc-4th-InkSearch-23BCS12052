@@ -63,3 +63,27 @@ The search endpoint converts the user query into an embedding using Sentence Tra
 Each stored document embedding is compared using cosine similarity.
 
 The API returns the Top K most similar documents.
+
+## Search Pipeline
+
+User Query
+
+↓
+
+Sentence Transformer
+
+↓
+
+Embedding
+
+↓
+
+Cosine Similarity
+
+↓
+
+Rank Documents
+
+↓
+
+Top K Results

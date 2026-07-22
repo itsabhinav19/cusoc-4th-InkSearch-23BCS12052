@@ -14,39 +14,41 @@ class SearchService:
         v1 = np.array(v1)
         v2 = np.array(v2)
 
-        return np.dot(v1, v2) / (
-            np.linalg.norm(v1) * np.linalg.norm(v2)
+        return float(
+            np.dot(v1, v2)
+            /
+            (
+                np.linalg.norm(v1)
+                *
+                np.linalg.norm(v2)
+            )
         )
 
     @staticmethod
-    def semantic_search(query, documents):
+    def search(query, documents):
 
         query_embedding = embedding_service.generate_embedding(query)
 
         results = []
 
-        for document in documents:
+        for doc in documents:
 
-            if document.embedding is None:
-                continue
+            embedding = json.loads(doc.embedding)
 
-            document_embedding = json.loads(document.embedding)
-
-            similarity = SearchService.cosine_similarity(
+            score = SearchService.cosine_similarity(
                 query_embedding,
-                document_embedding
+                embedding
             )
 
             results.append(
                 {
-                    "document": document,
-                    "score": float(similarity)
+                    "document": doc,
+                    "score": score
                 }
             )
 
-        results.sort(
+        return sorted(
+            results,
             key=lambda x: x["score"],
             reverse=True
         )
-
-        return results
