@@ -2,12 +2,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-
     DATABASE_URL: str
-
     MODEL_NAME: str
-
     API_VERSION: str
+
+    QDRANT_PATH: str= "qdrant_storage"
+    QDRANT_COLLECTION: str= "documents"
 
     model_config = SettingsConfigDict(
         env_file=".env",
