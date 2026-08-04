@@ -1,7 +1,6 @@
-import json
-import numpy as np
-
 from app.services.embedding_service import EmbeddingService
+from app.services.qdrant_service import qdrant_service
+from app.utils.logger import logger
 
 embedding_service = EmbeddingService()
 
@@ -9,46 +8,29 @@ embedding_service = EmbeddingService()
 class SearchService:
 
     @staticmethod
-    def cosine_similarity(v1, v2):
+    def semantic_search(query, top_k=5):
 
-        v1 = np.array(v1)
-        v2 = np.array(v2)
+        logger.info("Generating query embedding")
 
-        return float(
-            np.dot(v1, v2)
-            /
-            (
-                np.linalg.norm(v1)
-                *
-                np.linalg.norm(v2)
-            )
+        embedding = embedding_service.generate_embedding(query)
+
+        results = qdrant_service.search(
+            embedding,
+            limit=top_k
         )
+        logger.info("Generating query embedding")
+        response = []
 
-    @staticmethod
-    def search(query, documents):
+        for result in results:
 
-        query_embedding = embedding_service.generate_embedding(query)
-
-        results = []
-
-        for doc in documents:
-
-            embedding = json.loads(doc.embedding)
-
-            score = SearchService.cosine_similarity(
-                query_embedding,
-                embedding
-            )
-
-            results.append(
+            response.append(
                 {
-                    "document": doc,
-                    "score": score
+                    "document_id": result.payload["document_id"],
+                    "title": result.payload["title"],
+                    "author": result.payload["author"],
+                    "tags": result.payload["tags"],
+                    "score": result.score
                 }
             )
 
-        return sorted(
-            results,
-            key=lambda x: x["score"],
-            reverse=True
-        )
+        return response

@@ -9,7 +9,7 @@ from app.schemas.search import SearchRequest
 from app.services.search_service import SearchService
 from app.repositories.document_repository import DocumentRepository
 
-from app.repositories.search_repository import SearchRepository
+# from app.repositories.search_repository import SearchRepository
 
 router = APIRouter(
     prefix="/documents",
@@ -97,11 +97,9 @@ def search_documents(
     db: Session = Depends(get_db)
 ):
 
-    documents = SearchRepository.get_documents_with_embeddings(db)
-
     results = SearchService.semantic_search(
         request.query,
-        documents
+        request.top_k
     )
 
     return results[:request.top_k]

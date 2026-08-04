@@ -1,15 +1,15 @@
-from sqlalchemy.orm import Session
+# from sqlalchemy.orm import Session
 
-from app.models.document import Document
+# from app.models.document import Document
 
 
-class SearchRepository:
+# class SearchRepository:
 
-    @staticmethod
-    def get_documents_with_embeddings(db: Session):
+#     @staticmethod
+#     def get_documents_with_embeddings(db: Session):
 
-        return (
-            db.query(Document)
-            .filter(Document.embedding != None)
-            .all()
-        )
+#         return (
+#             db.query(Document)
+#             .filter(Document.embedding != None)
+#             .all()
+#         )

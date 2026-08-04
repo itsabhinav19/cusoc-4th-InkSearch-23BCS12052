@@ -6,7 +6,7 @@ from qdrant_client.models import (
 )
 
 from app.core.config import settings
-
+from qdrant_client.models import Filter
 
 class QdrantService:
 
@@ -60,5 +60,19 @@ class QdrantService:
             wait=True
         )
 
+    def search(
+        self,
+        embedding: list[float],
+        limit: int = 5
+    ):
+
+        results = self.client.query_points(
+            collection_name=self.collection_name,
+            query=embedding,
+            limit=limit,
+            with_payload=True
+        )
+
+        return results.points
 
 qdrant_service = QdrantService()
