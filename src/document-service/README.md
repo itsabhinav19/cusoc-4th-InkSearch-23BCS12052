@@ -87,3 +87,33 @@ Rank Documents
 ↓
 
 Top K Results
+
+## Hybrid Search
+
+InkSearch combines semantic and keyword search.
+
+### Semantic Search
+
+Sentence Transformers
+        ↓
+Embedding
+        ↓
+Qdrant
+        ↓
+Vector similarity
+
+### Keyword Search
+
+User Query
+        ↓
+PostgreSQL
+        ↓
+Keyword matching
+
+### Rank Fusion
+
+Semantic results + Keyword results
+        ↓
+Reciprocal Rank Fusion (RRF)
+        ↓
+Final ranked results

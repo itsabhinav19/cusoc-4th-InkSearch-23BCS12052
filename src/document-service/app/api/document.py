@@ -8,6 +8,7 @@ from app.services.document_service import DocumentService
 from app.schemas.search import SearchRequest
 from app.services.search_service import SearchService
 from app.repositories.document_repository import DocumentRepository
+from app.services.hybrid_search_service import HybridSearchService
 
 # from app.repositories.search_repository import SearchRepository
 
@@ -103,3 +104,15 @@ def search_documents(
     )
 
     return results[:request.top_k]
+
+@router.post("/hybrid-search")
+def hybrid_search(
+    request: SearchRequest,
+    db: Session = Depends(get_db)
+):
+
+    return HybridSearchService.hybrid_search(
+        db=db,
+        query=request.query,
+        top_k=request.top_k
+    )

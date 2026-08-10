@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.models.document import Document
 from app.schemas.document import DocumentCreate
 from app.services.embedding_service import EmbeddingService
+from sqlalchemy import or_
 
 
 class DocumentRepository:
@@ -75,3 +76,27 @@ class DocumentRepository:
     def get_all(db: Session):
 
         return db.query(Document).all()
+
+
+    @staticmethod
+    def keyword_search(
+        db: Session,
+        query: str,
+        limit: int = 10
+    ):
+
+        search_pattern = f"%{query}%"
+
+        return (
+            db.query(Document)
+            .filter(
+                or_(
+                    Document.title.ilike(search_pattern),
+                    Document.content.ilike(search_pattern),
+                    Document.author.ilike(search_pattern),
+                    Document.tags.ilike(search_pattern)
+                )
+            )
+            .limit(limit)
+            .all()
+        )
